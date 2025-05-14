@@ -1,0 +1,1 @@
+mcp-gp已经在transport层实现了Streamable http协议，但目前还缺乏server的实现，等待server实现后将会给出demo。
