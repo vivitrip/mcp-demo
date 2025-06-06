@@ -54,6 +54,15 @@ func TestDynamicToolServer(t *testing.T) {
 	}
 	t.Logf("初始化成功，服务器信息: %s %s", initResult.ServerInfo.Name, initResult.ServerInfo.Version)
 
+	// 获取并打印 MCP Server 所有可用的工具
+	toolsResult, err := mcpClient.ListTools(ctx, mcp.ListToolsRequest{})
+	if err != nil {
+		t.Fatalf("Failed to list tools: %v", err)
+	}
+	for _, tool := range toolsResult.Tools {
+		t.Logf("可用工具: %s - %s", tool.Name, tool.Description)
+	}
+
 	// 测试 hello_tool
 	t.Log("调用工具: hello_world")
 	helloRequest := mcp.CallToolRequest{

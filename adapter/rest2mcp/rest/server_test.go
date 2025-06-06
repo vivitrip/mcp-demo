@@ -32,7 +32,7 @@ func TestGreetHandler(t *testing.T) {
 			t.Fatalf("failed to decode response: %v", err)
 		}
 
-		expectedMessage := "Hello, Alice!"
+		expectedMessage := "Hello, Alice! This is from your rest server"
 		if respBody.Message != expectedMessage {
 			t.Errorf("expected message %q, got %q", expectedMessage, respBody.Message)
 		}

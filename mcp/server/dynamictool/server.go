@@ -49,7 +49,7 @@ func main() {
 }
 
 func helloHandler(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-	name, ok := request.Params.Arguments["name"].(string)
+	name, ok := request.Params.Arguments.(map[string]any)["name"].(string)
 	if !ok {
 		return nil, errors.New("name must be a string")
 	}
@@ -58,17 +58,17 @@ func helloHandler(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallTo
 
 // addToolHandler 方法，支持新增参数 paramList，并封装动态生成的工具逻辑
 func addToolHandler(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-	toolName, ok := request.Params.Arguments["toolName"].(string)
+	toolName, ok := request.Params.Arguments.(map[string]any)["toolName"].(string)
 	if !ok {
 		return nil, errors.New("toolName must be a string")
 	}
 
-	toolDesc, ok := request.Params.Arguments["toolDesc"].(string)
+	toolDesc, ok := request.Params.Arguments.(map[string]any)["toolDesc"].(string)
 	if !ok {
 		return nil, errors.New("toolDesc must be a string")
 	}
 
-	paramListStr, ok := request.Params.Arguments["paramList"].(string)
+	paramListStr, ok := request.Params.Arguments.(map[string]any)["paramList"].(string)
 	if !ok {
 		return nil, errors.New("paramList must be a JSON string")
 	}
@@ -95,7 +95,11 @@ func addToolHandler(ctx context.Context, request mcp.CallToolRequest) (*mcp.Call
 		// 校验必填参数
 		for paramName, isRequired := range paramList {
 			if isRequired {
-				if _, exists := req.Params.Arguments[paramName]; !exists {
+				argsMap, ok := req.Params.Arguments.(map[string]any)
+				if !ok {
+					return nil, errors.New("invalid arguments format")
+				}
+				if _, exists := argsMap[paramName]; !exists {
 					return nil, fmt.Errorf("missing required parameter: %s", paramName)
 				}
 			}
@@ -108,7 +112,7 @@ func addToolHandler(ctx context.Context, request mcp.CallToolRequest) (*mcp.Call
 }
 
 func deleteToolHandler(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-	toolName, ok := request.Params.Arguments["toolName"].(string)
+	toolName, ok := request.Params.Arguments.(map[string]any)["toolName"].(string)
 	if !ok {
 		return nil, errors.New("toolName must be a string")
 	}
